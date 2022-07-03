@@ -7,6 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	sqltrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/database/sql"
+	sqlxtrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/jmoiron/sqlx"
+	pechov4 "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -24,6 +28,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+
+	emiddleWarev4 "github.com/labstack/echo/v4/middleware"
 )
 
 const (
@@ -190,7 +196,13 @@ func NewMySQLConnectionEnv() *MySQLConnectionEnv {
 
 func (mc *MySQLConnectionEnv) ConnectDB() (*sqlx.DB, error) {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?parseTime=true&loc=Asia%%2FTokyo", mc.User, mc.Password, mc.Host, mc.Port, mc.DBName)
-	return sqlx.Open("mysql", dsn)
+
+	// ここをコメントアウト
+	// return sqlx.Open("mysql", dsn)
+
+	// ここを追加。Driverは合わせる
+	sqltrace.Register("mysql", &mysql.MySQLDriver{}, sqltrace.WithServiceName("test-go-mysql"))
+	return sqlxtrace.Open("mysql", dsn)
 }
 
 func init() {
@@ -207,7 +219,23 @@ func init() {
 }
 
 func main() {
+
+	// mainの先頭でtracerを設定。
+	tracer.Start(
+		tracer.WithDebugMode(true),
+		tracer.WithRuntimeMetrics(),
+	)
+	defer tracer.Stop()
+
+	// echoのMiddlewareを設定
 	e := echo.New()
+	e.Use(pechov4.Middleware(pechov4.WithServiceName("test-go")))
+
+	// echoでmiddlewareを使っているところは、明示的にv4のinterfaceを使うように変更
+	e.Use(emiddleWarev4.Logger())
+	e.Use(emiddleWarev4.Recover())
+
+	//e := echo.New()
 	e.Debug = true
 	e.Logger.SetLevel(log.DEBUG)
 
