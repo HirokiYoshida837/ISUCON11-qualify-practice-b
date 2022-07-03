@@ -604,7 +604,7 @@ func postIsu(c echo.Context) error {
 		c.Logger().Errorf("db error: %v", err)
 	}
 
-	if isuSelect.JIAIsuUUID == "" {
+	if isuSelect.JIAIsuUUID != "" {
 		return c.String(http.StatusConflict, "duplicated: isu")
 	}
 
