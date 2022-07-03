@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `isu_association_config`;
 DROP TABLE IF EXISTS `isu_condition`;
 DROP TABLE IF EXISTS `isu`;
+DROP TABLE IF EXISTS `isu_latest`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `isu` (
