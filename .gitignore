@@ -8,6 +8,7 @@
 .rustup
 .ssh
 .vscode-server
+node_modules
 
 /bench
 /local
