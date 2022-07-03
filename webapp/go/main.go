@@ -1389,6 +1389,18 @@ func postIsuCondition(c echo.Context) error {
 		"INSERT INTO `isu_condition` (`jia_isu_uuid`, `timestamp`, `is_sitting`, `condition`, `message`)"+
 			//"VALUES (:JIAIsuUUID, :Timestamp, :IsSitting, :Condition, :Message)", conditionStructs)
 			"VALUES (:jia_isu_uuid, :timestamp, :is_sitting, :condition, :message)", conditionStructs)
+	if err != nil {
+		c.Logger().Errorf("db error: %v", err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	// latestの方にもupsertする。
+
+	_, err = tx.NamedExec(
+		"INSERT INTO `isu_latest` (`character`, `jia_isu_uuid`, `timestamp`)"+
+			"VALUES (いじっぱり, :jia_isu_uuid, :timestamp)"+
+			"ON DUPLICATE KEY UPDATE"+
+			"`timestamp` = VALUES(:timestamp)", conditionStructs)
 
 	if err != nil {
 		c.Logger().Errorf("db error: %v", err)
