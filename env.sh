@@ -4,3 +4,8 @@ MYSQL_USER=isucon
 MYSQL_DBNAME=isucondition
 MYSQL_PASS=isucon
 POST_ISUCONDITION_TARGET_BASE_URL="https://isucondition-1.t.isucon.dev"
+
+DD_ENV=prod-c
+DD_SERVICE=test-go
+DD_VERSION=abc123
+DD_RUNTIME_METRICS_ENABLED=true
