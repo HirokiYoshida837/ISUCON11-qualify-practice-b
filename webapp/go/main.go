@@ -26,7 +26,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 
 	emiddleWarev4 "github.com/labstack/echo/v4/middleware"
@@ -232,15 +231,15 @@ func main() {
 	e.Use(pechov4.Middleware(pechov4.WithServiceName("test-go")))
 
 	// echoでmiddlewareを使っているところは、明示的にv4のinterfaceを使うように変更
-	e.Use(emiddleWarev4.Logger())
+	//e.Use(emiddleWarev4.Logger())
 	e.Use(emiddleWarev4.Recover())
 
 	//e := echo.New()
-	e.Debug = true
+	e.Debug = false
 	e.Logger.SetLevel(log.DEBUG)
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(middleware.Logger())
+	//e.Use(middleware.Recover())
 
 	e.POST("/initialize", postInitialize)
 
@@ -1190,7 +1189,7 @@ func postIsuCondition(c echo.Context) error {
 	// TODO: 一定割合リクエストを落としてしのぐようにしたが、本来は全量さばけるようにすべき
 	dropProbability := 0.9
 	if rand.Float64() <= dropProbability {
-		c.Logger().Warnf("drop post isu condition request")
+		//c.Logger().Warnf("drop post isu condition request")
 		return c.NoContent(http.StatusAccepted)
 	}
 
