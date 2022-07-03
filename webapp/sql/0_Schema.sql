@@ -38,6 +38,9 @@ CREATE TABLE `user` (
   `created_at` DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 
+create index user_jia_user_id_index
+    on user (jia_user_id);
+
 CREATE TABLE `isu_association_config` (
   `name` VARCHAR(255) PRIMARY KEY,
   `url` VARCHAR(255) NOT NULL UNIQUE
