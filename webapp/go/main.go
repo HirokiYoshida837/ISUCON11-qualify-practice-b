@@ -597,6 +597,17 @@ func postIsu(c echo.Context) error {
 		}
 	}
 
+	var isuSelect Isu
+	dberr := db.Select(&isuSelect, "SELECT `jia_isu_uuid` FROM `isu` WHERE `jia_isu_uuid` = ?", jiaIsuUUID)
+
+	if dberr != nil {
+		c.Logger().Errorf("db error: %v", err)
+	}
+
+	if isuSelect.JIAIsuUUID == "" {
+		return c.String(http.StatusConflict, "duplicated: isu")
+	}
+
 	tx, err := db.Beginx()
 	if err != nil {
 		c.Logger().Errorf("db error: %v", err)
