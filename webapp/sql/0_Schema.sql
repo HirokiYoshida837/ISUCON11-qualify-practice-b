@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `isu_association_config`;
 DROP TABLE IF EXISTS `isu_condition`;
 DROP TABLE IF EXISTS `isu`;
+DROP TABLE IF EXISTS `isu_latest`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `isu` (
@@ -16,11 +17,10 @@ CREATE TABLE `isu` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 
 create table `isu_latest` (
-  `id` bigint AUTO_INCREMENT,
   `character` VARCHAR(255),
   `jia_isu_uuid` CHAR(36) NOT NULL,
   `timestamp` DATETIME NOT NULL,
-  PRIMARY KEY(`id`)
+  PRIMARY KEY(`jia_isu_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;
 
 CREATE TABLE `isu_condition` (
